@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>知栈 · 判断库 —— 39 期 AI 技术播客里能带走的判断</title>
+<meta name="description" content="一条每天自动起跑的 AI 技术播客流水线，把每期最后一句话能带走的东西抽出来，做成可检索、可收藏、可导出的判断库。">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="知栈 · 判断库">
+<meta property="og:description" content="39 期 AI 技术播客，50 条装得进口袋的判断。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23191a18'/%3E%3Cg fill='%23f6f4ee'%3E%3Crect x='6' y='12' width='3' height='8' rx='1.2'/%3E%3Crect x='11.5' y='7' width='3' height='18' rx='1.2'/%3E%3Crect x='17' y='10' width='3' height='12' rx='1.2'/%3E%3Crect x='22.5' y='14' width='3' height='5' rx='1.2'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a class="brand" href="#top" aria-label="回到顶部">
+      <svg class="brand__mark" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <rect x="1" y="9" width="3" height="8" rx="1.2" fill="var(--ink)"/>
+        <rect x="6.5" y="4" width="3" height="18" rx="1.2" fill="var(--ink)"/>
+        <rect x="12" y="7" width="3" height="12" rx="1.2" fill="var(--ink)"/>
+        <rect x="17.5" y="11" width="3" height="5" rx="1.2" fill="var(--ink)"/>
+        <rect x="23" y="12.5" width="2" height="2" rx="1" fill="var(--clay)"/>
+      </svg>
+      <span class="brand__name">知栈 · 判断库</span>
+      <span class="brand__sub">Sourcecast</span>
+    </a>
+
+    <nav class="nav" aria-label="主导航">
+      <a href="#judgments" data-nav="judgments">判断库</a>
+      <a href="#episodes" data-nav="episodes">期次</a>
+      <a href="#pipeline" data-nav="pipeline">产线</a>
+      <a href="#about" data-nav="about">关于</a>
+    </nav>
+
+    <div class="topbar__right">
+      <label class="searchbox">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M10.6 10.6 14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <input id="q" type="search" placeholder="搜判断，比如「备份」" autocomplete="off" spellcheck="false" aria-label="搜索判断">
+        <span class="kbd">/</span>
+      </label>
+      <button class="iconbtn" id="openSaved" aria-label="我的清单">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M4 2.5h8v11l-4-2.6-4 2.6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+        </svg>
+        <span class="count" id="savedCount">0</span>
+      </button>
+      <button class="iconbtn" id="toggleTheme" aria-label="切换深色 / 浅色">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 首屏 -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">WorkBuddy · 1024 造物挑战 / 参赛作品</span>
+      <h1>39 期 AI 技术播客，<br><em>50 条装得进口袋的判断</em>。</h1>
+      <p class="hero__lede">
+        一条流水线每天自动起跑：从 GitHub 挑一个项目，<b>逐文件读源码</b>，写成上万字的中文口播稿，
+        合成音频，分发出去。三十九期下来，真正能被带走的不是稿子有多长，而是每期最后沉淀下来的那几句
+        ——判断。这个站把它们抽出来，做成一个<b>能搜、能收藏、能导出</b>的库。
+      </p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__n" id="sEp">39<small>期</small></div><div class="stat__k">已产出（2026-09-08 起）</div></div>
+        <div class="stat"><div class="stat__n" id="sJ">50<small>条</small></div><div class="stat__k">判断，全部为稿中原话</div></div>
+        <div class="stat"><div class="stat__n" id="sR">71<small>个</small></div><div class="stat__k">讲过的开源仓库</div></div>
+        <div class="stat"><div class="stat__n" id="sA">8<small>期</small></div><div class="stat__k">可在本站试听（AI 合成）</div></div>
+      </div>
+
+      <div class="hero__actions">
+        <button class="btn btn--primary" id="rollBtn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="12" height="12" rx="3" stroke="currentColor" stroke-width="1.3"/>
+            <circle cx="5.6" cy="5.6" r="1" fill="currentColor"/><circle cx="10.4" cy="10.4" r="1" fill="currentColor"/>
+            <circle cx="10.4" cy="5.6" r="1" fill="currentColor"/><circle cx="5.6" cy="10.4" r="1" fill="currentColor"/>
+          </svg>
+          随机抽一条判断
+        </button>
+        <a class="btn btn--ghost" href="#judgments">进判断库</a>
+        <a class="btn btn--ghost" href="#pipeline">看一眼产线</a>
+      </div>
+
+      <div class="daily" id="daily" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 判断库 -->
+  <section id="judgments">
+    <div class="wrap">
+      <div class="sechead reveal">
+        <div>
+          <h2 class="sechead__t">判断库</h2>
+          <p class="sechead__d">从 20 期里摘出来的 50 条判断，全部是稿子里的原话，没有改写。搜关键词、按主题线筛，点书签收进你的清单。</p>
+        </div>
+        <div class="sechead__r">
+          <span class="tag" id="resultCount">50 条</span>
+        </div>
+      </div>
+      <div class="filters reveal" id="seriesFilters"></div>
+      <p class="usage reveal">按 <span class="kbd">/</span> 搜一个词 · 点 <b>ep20</b> 这样的期号看整期 · 右下角书签收进清单 · 清单右上角导出 Markdown</p>
+      <div class="jgrid" id="jgrid"></div>
+      <div class="empty" id="jempty" hidden>没搜到。换一个词试试，比如 <b>备份</b>、<b>过期</b>、<b>模型</b>、<b>交接</b>。</div>
+    </div>
+  </section>
+
+  <!-- 期次 -->
+  <section id="episodes">
+    <div class="wrap">
+      <div class="sechead reveal">
+        <div>
+          <h2 class="sechead__t">三十九期</h2>
+          <p class="sechead__d">按上线时间倒序。点开任意一期，看它的判断、讲过的仓库、可试听的片段。</p>
+        </div>
+        <div class="sechead__r"><span class="tag">点任一行展开</span></div>
+      </div>
+      <div class="eplist reveal" id="eplist"></div>
+    </div>
+  </section>
+
+  <!-- 产线 -->
+  <section id="pipeline">
+    <div class="wrap">
+      <div class="sechead reveal">
+        <div>
+          <h2 class="sechead__t">这条产线怎么跑</h2>
+          <p class="sechead__d">每天一次，五段，没有人在键盘前。下面这些数字都是实测值，不是目标值。</p>
+        </div>
+      </div>
+      <div class="pipe reveal">
+        <div class="step">
+          <div class="step__no">01</div>
+          <div class="step__t">发现 <span class="en">fetch</span></div>
+          <p class="step__d">GitHub 搜索 + 国内大厂官方源，每天重抓一遍，写进 SQLite。</p>
+          <div class="step__n"><b>125</b> 个仓库入库</div>
+        </div>
+        <div class="step">
+          <div class="step__no">02</div>
+          <div class="step__t">选料 <span class="en">pick</span></div>
+          <p class="step__d">星级 ≥ 3000、近 90 天有提交、没讲过、不在停服黑名单里。</p>
+          <div class="step__n"><b>5</b> 道筛</div>
+        </div>
+        <div class="step">
+          <div class="step__no">03</div>
+          <div class="step__t">拆解 <span class="en">read</span></div>
+          <p class="step__d">逐文件读源码，不是看摘要。拆解笔记按 10–16 个字段写，带取证台账。</p>
+          <div class="step__n"><b>71</b> 个仓库已拆</div>
+        </div>
+        <div class="step">
+          <div class="step__no">04</div>
+          <div class="step__t">成稿 <span class="en">write</span></div>
+          <p class="step__d">中文口语稿，讲给一个人听。验收线 8,500 汉字，实际多数落在 9,000–15,000。</p>
+          <div class="step__n"><b>≈10k</b> 汉字 / 期</div>
+        </div>
+        <div class="step">
+          <div class="step__no">05</div>
+          <div class="step__t">出声 <span class="en">speak</span></div>
+          <p class="step__d">三级合成降级链，出成品自动挂限幅，压成单声道小文件。</p>
+          <div class="step__n"><b>38–114</b> 分钟 / 期</div>
+        </div>
+      </div>
+
+      <div class="gates reveal">
+        <div class="gate">
+          <div class="gate__k">Gate 01</div>
+          <div class="gate__t">稿子真的落盘了吗</div>
+          <p class="gate__d">比 mtime。拦「说写了、其实没写」。</p>
+        </div>
+        <div class="gate">
+          <div class="gate__k">Gate 02</div>
+          <div class="gate__t">够不够长</div>
+          <p class="gate__d">正文汉字数，按 175 字/分钟折算。短要解释，水要回炉。</p>
+        </div>
+        <div class="gate">
+          <div class="gate__k">Gate 03</div>
+          <div class="gate__t">密度跟不跟得上</div>
+          <p class="gate__d">每 1000 汉字至少 2 处具体的东西：文件名、参数值、取舍点。</p>
+        </div>
+        <div class="gate">
+          <div class="gate__k">Gate 04</div>
+          <div class="gate__t">过程走过没有</div>
+          <p class="gate__d">拆解笔记的字段数、字节数、台账节。读没读源码，只有这个能机械验。</p>
+        </div>
+        <div class="gate">
+          <div class="gate__k">Gate 05</div>
+          <div class="gate__t">是不是又讲了一遍</div>
+          <p class="gate__d">对历史台账去重，外加停服项目黑名单。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于 -->
+  <section id="about">
+    <div class="wrap">
+      <div class="about">
+        <div class="prose reveal">
+          <h2 class="sechead__t" style="margin-top:0">关于这个站</h2>
+          <p style="margin-top:14px">它是一个<b>个人项目</b>的资料库切面：底下是每天跑的播客产线，上面是这 39 期里真正值得记下来的判断。</p>
+          <p>为什么做判断库而不是播客播放器：一集动辄一小时，听完记住的通常就一句。那一句如果散在几十份稿子里，等于没有。所以这里只做一件事——把那一句找出来，让它可搜、可对照、可带走。</p>
+          <p>判断全部<b>逐字摘自原稿</b>，不改写成更好听的版本；来源期次、主题线、仓库都挂在卡片上，点得回去。搜「备份」会落到讲备份能不能恢复的那一期，搜「模型」会落到换模型时哪些东西悄悄变了的那一期。</p>
+          <p>数据侧的做法跟产线一致：页面是 Markdown，构建脚本把它抽成 JSON，前端零框架、零外链、零追踪。整个站在断网、无 CDN 的情况下也能打开。</p>
+        </div>
+        <aside class="note reveal">
+          <h4>需要说明的三件事</h4>
+          <ul>
+            <li><b>音频是 AI 合成</b>：试听片段由云端语音合成产出，不是真人录音。片头保留了原来的主播前缀与背景音乐。</li>
+            <li><b>本站做了脱敏</b>：去掉了本机绝对路径、第三方人名；含第三方克隆音色的期次只放文字，不放试听。</li>
+            <li><b>没有放全文</b>：39 期原稿合计数十万字，站上只放判断与摘要。原稿、拆解笔记留在本地，按需申请可看。</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;">
+      <span class="foot__seal">
+        <svg width="18" height="18" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <rect x="1" y="9" width="3" height="8" rx="1.2" fill="var(--ink-4)"/>
+          <rect x="6.5" y="4" width="3" height="18" rx="1.2" fill="var(--ink-4)"/>
+          <rect x="12" y="7" width="3" height="12" rx="1.2" fill="var(--ink-4)"/>
+          <rect x="17.5" y="11" width="3" height="5" rx="1.2" fill="var(--ink-4)"/>
+        </svg>
+        知栈 · Sourcecast
+      </span>
+      <span>数据截至 <span id="dataDate">2026-10-22</span> ｜ 判断逐字摘自原稿 ｜ 音频为 AI 合成</span>
+      <span>独立制作 · 无第三方追踪</span>
+    </div>
+  </footer>
+</main>
+
+<!-- 期次抽屉 -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="期次详情">
+  <div class="drawer__bar">
+    <span class="drawer__no" id="dNo">EP</span>
+    <button class="drawer__close" id="dClose" aria-label="关闭">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="drawer__body" id="dBody"></div>
+</aside>
+
+<!-- 我的清单抽屉 -->
+<aside class="drawer drawer--slim" id="mydrawer" aria-hidden="true" aria-label="我的清单">
+  <div class="drawer__bar">
+    <span class="drawer__no">我的清单</span>
+    <button class="drawer__close" id="myClose" aria-label="关闭">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="drawer__body" id="myBody"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
