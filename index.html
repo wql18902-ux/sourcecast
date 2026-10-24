@@ -14,6 +14,8 @@
 </head>
 <body>
 
+<div class="progress" id="progress"></div>
+
 <header class="topbar">
   <div class="wrap topbar__inner">
     <a class="brand" href="#top" aria-label="回到顶部">
@@ -73,6 +75,14 @@
         <div class="stat"><div class="stat__n" id="sJ">50<small>条</small></div><div class="stat__k">判断，全部为稿中原话</div></div>
         <div class="stat"><div class="stat__n" id="sR">71<small>个</small></div><div class="stat__k">讲过的开源仓库</div></div>
         <div class="stat"><div class="stat__n" id="sA">8<small>期</small></div><div class="stat__k">可在本站试听（AI 合成）</div></div>
+      </div>
+
+      <div class="spine-wrap reveal">
+        <div class="spine__head">
+          <span class="spine__cap">每根柱子一期 · 高度是这一期讲稿的汉字数 · 颜色是主题线</span>
+          <span class="spine__sum" id="spineSum"></span>
+        </div>
+        <div class="spine" id="spine" aria-label="三十九期的讲稿长度"></div>
       </div>
 
       <div class="hero__actions">
@@ -202,8 +212,8 @@
     <div class="wrap">
       <div class="about">
         <div class="prose reveal">
-          <h2 class="sechead__t" style="margin-top:0">关于这个站</h2>
-          <p style="margin-top:14px">它是一个<b>个人项目</b>的资料库切面：底下是每天跑的播客产线，上面是这 39 期里真正值得记下来的判断。</p>
+          <div class="sechead" style="margin-bottom:14px"><h2 class="sechead__t">关于这个站</h2></div>
+          <p style="margin-top:0">它是一个<b>个人项目</b>的资料库切面：底下是每天跑的播客产线，上面是这 39 期里真正值得记下来的判断。</p>
           <p>为什么做判断库而不是播客播放器：一集动辄一小时，听完记住的通常就一句。那一句如果散在几十份稿子里，等于没有。所以这里只做一件事——把那一句找出来，让它可搜、可对照、可带走。</p>
           <p>判断全部<b>逐字摘自原稿</b>，不改写成更好听的版本；来源期次、主题线、仓库都挂在卡片上，点得回去。搜「备份」会落到讲备份能不能恢复的那一期，搜「模型」会落到换模型时哪些东西悄悄变了的那一期。</p>
           <p>数据侧的做法跟产线一致：页面是 Markdown，构建脚本把它抽成 JSON，前端零框架、零外链、零追踪。整个站在断网、无 CDN 的情况下也能打开。</p>

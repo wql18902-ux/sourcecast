@@ -806,3 +806,214 @@ mark { background: color-mix(in srgb, var(--gold) 26%, transparent); color: inhe
   grid-row: span 2;
 }
 .howto__i b { display: block; color: var(--ink); font-weight: 600; font-size: 13.5px; }
+
+/* ═══ 风格深化层（2026-10-24） ══════════════════════════════════ */
+
+/* 顶部阅读进度 */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--clay);
+  z-index: 60;
+  transition: width 0.1s linear;
+}
+
+/* 焦点可见（键盘可达） */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+button:focus:not(:focus-visible) { outline: none; }
+
+/* 章节编号：01 / 02 / 03 / 04 */
+main { counter-reset: sec; }
+.sechead { counter-increment: sec; }
+.sechead__t::before {
+  content: counter(sec, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--clay);
+  margin-right: 12px;
+  vertical-align: 0.18em;
+}
+
+/* 讲稿脉络条带 */
+.spine-wrap { margin: 30px 0 0; }
+.spine__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.spine__cap {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+}
+.spine__sum {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.spine {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2px;
+  height: 78px;
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--rule);
+}
+.spine__b {
+  flex: 0 1 18px;
+  min-width: 3px;
+  height: var(--h);
+  padding: 0;
+  border-radius: 1.5px 1.5px 0 0;
+  background: color-mix(in srgb, var(--sc) 62%, transparent);
+  transition: background 0.14s, transform 0.14s, height 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.spine__b:hover, .spine__b:focus-visible {
+  background: var(--sc);
+  transform: scaleY(1.06);
+  transform-origin: bottom;
+}
+.tip {
+  position: absolute;
+  z-index: 120;
+  transform: translate(-50%, -4px);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11.5px;
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+  padding: 5px 9px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s, transform 0.14s;
+}
+.tip.is-on { opacity: 1; transform: translate(-50%, -8px); }
+
+/* 主题线色点 */
+.chip { display: inline-flex; align-items: center; gap: 6px; }
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sc);
+  flex: none;
+  opacity: 0.85;
+}
+.chip.is-on .dot { opacity: 1; }
+
+/* 判断卡：左侧主题线色带 */
+.jcard {
+  box-shadow: inset 2px 0 0 0 color-mix(in srgb, var(--sc, var(--ink-4)) 55%, transparent);
+}
+.jcard:hover {
+  box-shadow: inset 2px 0 0 0 var(--sc, var(--ink)), var(--shadow);
+}
+
+/* 期次列表：按月分组 + 行首色带 */
+.month {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 4px 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--ink-4);
+  text-transform: uppercase;
+}
+.month i { flex: 1; height: 1px; background: var(--rule-soft); }
+.eprow { position: relative; box-shadow: inset 2px 0 0 0 color-mix(in srgb, var(--sc, var(--ink-4)) 45%, transparent); }
+.eprow:hover { box-shadow: inset 2px 0 0 0 var(--sc, var(--ink)); }
+.eplist { border-top: 0; }
+.eplist .month:first-child { padding-top: 4px; }
+
+/* 产线上的节点 */
+.pipe { position: relative; }
+.step { position: relative; }
+.step::before {
+  content: "";
+  position: absolute;
+  top: -4.5px;
+  left: 18px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--ink-4);
+}
+.step:first-child::before { background: var(--clay); border-color: var(--clay); }
+
+/* 首屏统计：数字更紧，说明更小 */
+.stat__n { letter-spacing: -0.03em; }
+.stat__k { font-size: 11.5px; line-height: 1.5; }
+
+/* 卡片页脚期号做成小标签，减少与正文的视觉重量冲突 */
+.jcard__ep {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .spine { height: 58px; gap: 2px; }
+  .spine__b { border-radius: 1px 1px 0 0; }
+  .sechead__t::before { margin-right: 8px; }
+  .step::before { left: 14px; }
+}
+
+/* 今日一条上的小动作 */
+.daily__acts { display: inline-flex; gap: 6px; margin-left: auto; }
+.minibtn {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 2px 10px;
+  transition: all 0.16s;
+}
+.minibtn:hover { border-color: var(--clay); color: var(--clay); background: var(--clay-wash); }
+.minibtn.is-on { color: var(--clay); border-color: color-mix(in srgb, var(--clay) 38%, transparent); }
+
+/* 判断卡角标 */
+.jcard__go {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ink-4);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.18s, transform 0.18s;
+}
+.jcard:hover .jcard__go { opacity: 1; transform: none; }
+
+/* 抽屉顶栏的主题线色带 */
+.drawer__bar { box-shadow: inset 3px 0 0 var(--sc, transparent); }
+
+/* 期次行号区的色点 */
+.eprow__no { display: flex; align-items: center; gap: 6px; }
+.eprow__no .dot { opacity: 0.7; }
+
+/* 卡片切换时的轻过渡 */
+.jcard { animation: cardIn 0.32s ease both; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }

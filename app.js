@@ -14,6 +14,10 @@
   const ALL = [];
   EPS.forEach((ep) => ep.judgments.forEach((t, i) => ALL.push({ text: t, ep, i })));
 
+  const SERIES_COLOR = {};
+  (LIB.series_meta || []).forEach((m) => { SERIES_COLOR[m.name] = m.color; });
+  const colorOf = (ep) => ep.color || SERIES_COLOR[ep.series] || "var(--ink-4)";
+
   const state = {
     q: "",
     series: "",
@@ -69,7 +73,8 @@
     const items = [["", "全部"]].concat(Object.keys(counts).map((s) => [s, s]));
     host.innerHTML = items.map(([k, label]) => {
       const n = k ? counts[k] : EPS.length;
-      return `<button class="chip ${state.series === k ? "is-on" : ""}" data-series="${esc(k)}">${esc(label)}<span class="n">${n}</span></button>`;
+      const dot = k ? `<i class="dot" style="--sc:${esc(SERIES_COLOR[k] || "var(--ink-4)")}"></i>` : "";
+      return `<button class="chip ${state.series === k ? "is-on" : ""}" data-series="${esc(k)}">${dot}${esc(label)}<span class="n">${n}</span></button>`;
     }).join("");
     $$(".chip", host).forEach((b) => b.addEventListener("click", () => {
       state.series = b.dataset.series;
@@ -82,10 +87,16 @@
     const list = ALL.filter((j) => (!state.series || j.ep.series === state.series) && matchJ(j, state.q));
     $("#resultCount").textContent = `${list.length} 条`;
     $("#jempty").hidden = list.length > 0;
+    if (!list.length) {
+      $("#jempty").innerHTML = state.q
+        ? `没搜到「<b>${esc(state.q)}</b>」。换个词试试：备份 · 过期 · 模型 · 交接 · 静默`
+        : `这条主题线暂时没有判断。点「全部」看 50 条。`;
+    }
     host.innerHTML = list.map((j) => {
       const id = `${j.ep.slug}#${j.i}`;
       const on = state.saved.has(id);
-      return `<article class="jcard" data-ep="${esc(j.ep.slug)}">
+      return `<article class="jcard" data-ep="${esc(j.ep.slug)}" style="--sc:${esc(colorOf(j.ep))}">
+        <span class="jcard__go" aria-hidden="true">看整期 ↗</span>
         <p class="jcard__text">${mark(j.text, state.q)}</p>
         <div class="jcard__foot">
           <button class="jcard__ep" data-open="${esc(j.ep.slug)}">${epLabel(j.ep)}</button>
@@ -124,7 +135,7 @@
       const on = state.saved.has(b.dataset.save);
       b.classList.toggle("is-on", on);
       b.setAttribute("aria-pressed", String(on));
-      b.lastChild.textContent = on ? " 已收" : " 收藏";
+      b.lastChild.textContent = on ? "已收" : "收藏";
     });
     if ($("#mydrawer").classList.contains("is-open")) renderSaved();
   }
@@ -192,15 +203,20 @@
   function renderEpisodes() {
     const host = $("#eplist");
     const list = EPS.filter((ep) => !state.series || ep.series === state.series).slice().reverse();
+    let lastMonth = "";
     host.innerHTML = list.map((ep) => {
+      const monthHead = ep.month && ep.month !== lastMonth
+        ? `<div class="month" role="presentation"><span>${esc(ep.month.replace("-", " 年 "))} 月</span><i></i></div>`
+        : "";
+      lastMonth = ep.month || lastMonth;
       const tags = [
         ep.audio ? `<span class="tag tag--audio">可试听</span>` : "",
         ep.judgments.length ? `<span class="tag tag--judge">${ep.judgments.length} 条判断</span>` : "",
         ep.series ? `<span class="tag">${esc(ep.series)}</span>` : "",
       ].join("");
       const desc = ep.one_liner || ep.subtitle || (ep.repos.length ? ep.repos.join(" · ") : "—");
-      return `<button class="eprow" data-open="${esc(ep.slug)}">
-        <span class="eprow__no">${String(ep.no).padStart(2, "0")}</span>
+      return `${monthHead}<button class="eprow" data-open="${esc(ep.slug)}" style="--sc:${esc(colorOf(ep))}">
+        <span class="eprow__no"><i class="dot" style="--sc:${esc(colorOf(ep))}"></i>${String(ep.no).padStart(2, "0")}</span>
         <span class="eprow__main">
           <span class="eprow__t">${esc(ep.title || ep.slug)}<span class="date">${esc(ep.date || "")}</span></span>
           <span class="eprow__s">${esc(desc)}</span>
@@ -256,6 +272,7 @@
         }).join("")}</div>`
       : "";
 
+    $("#drawer").style.setProperty("--sc", colorOf(ep));
     $("#dBody").innerHTML = `
       <h2>${esc(ep.title || ep.slug)}</h2>
       ${ep.subtitle ? `<p class="drawer__sub">${esc(ep.subtitle)}</p>` : ""}
@@ -304,6 +321,7 @@
     const host = $("#daily");
     if (!j) { host.hidden = true; return; }
     host.hidden = false;
+    const id = `${j.ep.slug}#${j.i}`;
     host.innerHTML = `
       <span class="daily__tag">今日一条</span>
       <div>
@@ -312,8 +330,15 @@
           <a href="#" data-open="${esc(j.ep.slug)}">${epLabel(j.ep)} · ${esc(epShort(j.ep))}</a>
           <span>${esc(j.ep.series || "")}</span>
           <span>${esc(j.ep.date || "")}</span>
+          <span class="daily__acts">
+            <button class="minibtn ${state.saved.has(id) ? "is-on" : ""}" data-save="${esc(id)}">${state.saved.has(id) ? "已收" : "收藏"}</button>
+            <button class="minibtn" id="dailyRoll">换一条</button>
+          </span>
         </div>
       </div>`;
+    $$("[data-save]", host).forEach((b) => b.addEventListener("click", () => toggleSave(b.dataset.save)));
+    const roll = $("#dailyRoll", host);
+    if (roll) roll.addEventListener("click", rollOne);
     $(".daily__q", host).addEventListener("click", (e) => e.stopPropagation());
     $$("[data-open]", host).forEach((b) => b.addEventListener("click", (e) => {
       e.preventDefault(); openEp(b.dataset.open);
@@ -324,11 +349,59 @@
         { duration: 340, easing: "cubic-bezier(.2,.7,.2,1)" });
     }
   }
-  $("#rollBtn").addEventListener("click", () => {
+  function rollOne() {
     const j = ALL[Math.floor(Math.random() * ALL.length)];
     renderDaily(j, true);
     toast("换了一条 · 再抽一次试试");
-  });
+  }
+  $("#rollBtn").addEventListener("click", rollOne);
+
+  /* ── 讲稿脉络条带 ───────────────────────────────── */
+  function renderSpine() {
+    const host = $("#spine");
+    if (!host) return;
+    const max = Math.max(...EPS.map((e) => e.chars || 0), 1);
+    host.innerHTML = EPS.map((ep) => {
+      const h = Math.max(6, Math.round(((ep.chars || 0) / max) * 100));
+      const label = `ep${ep.no} · ${ep.title || ep.slug} · ${(ep.chars || 0).toLocaleString()} 字`;
+      return `<button class="spine__b" data-open="${esc(ep.slug)}" data-tip="${esc(label)}"
+                style="--h:${h}%;--sc:${esc(colorOf(ep))}" aria-label="${esc(label)}"></button>`;
+    }).join("");
+    const total = (LIB.chars_total || 0);
+    $("#spineSum").textContent = `合计 ${(total / 10000).toFixed(1)} 万字`;
+
+    const tip = document.createElement("div");
+    tip.className = "tip";
+    document.body.appendChild(tip);
+    const show = (b) => {
+      tip.textContent = b.dataset.tip;
+      tip.classList.add("is-on");
+      const r = b.getBoundingClientRect();
+      tip.style.left = `${Math.min(Math.max(r.left + r.width / 2, 80), innerWidth - 80)}px`;
+      tip.style.top = `${r.top + window.scrollY - 34}px`;
+    };
+    const hide = () => tip.classList.remove("is-on");
+    $$(".spine__b", host).forEach((b) => {
+      b.addEventListener("mouseenter", () => show(b));
+      b.addEventListener("focus", () => show(b));
+      b.addEventListener("mouseleave", hide);
+      b.addEventListener("blur", hide);
+      b.addEventListener("click", () => openEp(b.dataset.open));
+    });
+  }
+
+  /* ── 阅读进度 ───────────────────────────────────── */
+  function bindProgress() {
+    const bar = $("#progress");
+    if (!bar) return;
+    const upd = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.width = `${max > 0 ? Math.min(100, (scrollY / max) * 100) : 0}%`;
+    };
+    addEventListener("scroll", upd, { passive: true });
+    addEventListener("resize", upd);
+    upd();
+  }
 
   /* ── 搜索 ───────────────────────────────────────── */
   const qEl = $("#q");
@@ -385,7 +458,10 @@
     renderFilters();
     renderJudgments();
     renderEpisodes();
+    renderSpine();
     renderDaily(dailyPick(), false);
+    bindProgress();
+    if (innerWidth < 560) qEl.placeholder = "搜判断";
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
