@@ -223,7 +223,7 @@
     const audio = ep.audio
       ? `<div class="dhead">试听</div>
          <div class="player">
-           <audio controls preload="none" src="media/ep${ep.no}-preview.m4a"></audio>
+           <audio controls preload="metadata" src="media/ep${ep.no}-preview.m4a"></audio>
            <p class="player__cap">节选 96 秒，节选自 ${ep.audio.minutes} 分钟的整期；AI 合成语音（云端语音合成，含原主播前缀与背景音乐）。</p>
          </div>`
       : `<div class="dhead">试听</div>
