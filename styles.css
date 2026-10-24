@@ -1017,3 +1017,23 @@ main { counter-reset: sec; }
 /* 卡片切换时的轻过渡 */
 .jcard { animation: cardIn 0.32s ease both; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* 首屏压缩：让 1440×900 一屏装下 标题→统计→脉络条→今日一条 */
+.hero { padding: 48px 0 34px; }
+.hero h1 { margin-top: 14px; }
+.hero__lede { margin-top: 16px; font-size: 15px; line-height: 1.8; }
+.stats { margin-top: 26px; }
+.stat { padding: 13px 20px 12px; }
+.spine-wrap { margin-top: 22px; }
+.spine { height: 68px; }
+.spine__head { margin-bottom: 8px; }
+.hero__actions { margin-top: 20px; }
+.daily { margin-top: 26px; padding: 20px 24px; }
+.daily__q { font-size: clamp(17px, 2.2vw, 23px); }
+
+@media (max-width: 720px) {
+  .hero { padding: 34px 0 24px; }
+  .hero__lede { font-size: 14.5px; }
+  .daily { padding: 18px 18px; }
+  .spine { height: 52px; }
+}
